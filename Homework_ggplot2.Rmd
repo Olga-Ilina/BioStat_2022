@@ -1,6 +1,6 @@
 ---
-title: "HW1_Part2"
-author: "olga"
+title: "Homework_ggplot2"
+author: "Olga"
 date: "2022-10-16"
 output: 
   html_document:
@@ -291,7 +291,7 @@ df %>%
 
 ```
 
-# 13. Как представлена зависимость BMI и charges и распределение BMI и charges в зависимости от region?
+# 13. Как представлена зависимость BMI и charges и распределение BMI и charges в зависимости от region у людей старше 35 лет?
 ```{r}
 # Создаём подвыборку для людей старше 35 лет и создаём диаграмму рассеяния зависимости charges от age
 scatter <- df %>%
