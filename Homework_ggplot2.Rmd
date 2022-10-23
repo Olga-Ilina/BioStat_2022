@@ -72,7 +72,7 @@ df %>%
   ggplot(aes(x=charges))+
   geom_density (fill ="blue", alpha = 0.3) +
   xlab("Charges (US Doll)") + 
-  ylab("log (Density)") +
+  ylab("Density") +
   ggtitle("Charges distribution") +
   theme(plot.title = element_text(hjust = 0.3))+
   geom_vline(xintercept = charges_mean, size = 1, color = "red", linetype = "dashed") +

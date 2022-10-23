@@ -16,7 +16,7 @@ devtools::install_github("ropensci/plotly")
     ## Downloading GitHub repo ropensci/plotly@HEAD
 
     ## 
-    ##      checking for file ‘/private/var/folders/md/d3tjc99n06z74xxpmw6c9_y40000gn/T/RtmpEDONy4/remotes16e5b18afcdc2/plotly-plotly.R-c95a20f/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/md/d3tjc99n06z74xxpmw6c9_y40000gn/T/RtmpEDONy4/remotes16e5b18afcdc2/plotly-plotly.R-c95a20f/DESCRIPTION’
+    ##      checking for file ‘/private/var/folders/md/d3tjc99n06z74xxpmw6c9_y40000gn/T/Rtmpi0ILwp/remotes16f2b5a8cc579/plotly-plotly.R-c95a20f/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/md/d3tjc99n06z74xxpmw6c9_y40000gn/T/Rtmpi0ILwp/remotes16f2b5a8cc579/plotly-plotly.R-c95a20f/DESCRIPTION’
     ##   ─  preparing ‘plotly’:
     ##      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
     ##   ─  checking for LF line-endings in source and make files and shell scripts
@@ -58,7 +58,7 @@ install.packages (c('dplyr', 'magrittr', 'tidyr', 'ggplot2', 'ggpubr', "skimr", 
 
     ## 
     ## The downloaded binary packages are in
-    ##  /var/folders/md/d3tjc99n06z74xxpmw6c9_y40000gn/T//RtmpEDONy4/downloaded_packages
+    ##  /var/folders/md/d3tjc99n06z74xxpmw6c9_y40000gn/T//Rtmpi0ILwp/downloaded_packages
 
 ``` r
 library(skimr)
@@ -151,7 +151,7 @@ df %>%
   ggplot(aes(x=charges))+
   geom_density (fill ="blue", alpha = 0.3) +
   xlab("Charges (US Doll)") + 
-  ylab("log (Density)") +
+  ylab("Density") +
   ggtitle("Charges distribution") +
   theme(plot.title = element_text(hjust = 0.3))+
   geom_vline(xintercept = charges_mean, size = 1, color = "red", linetype = "dashed") +
