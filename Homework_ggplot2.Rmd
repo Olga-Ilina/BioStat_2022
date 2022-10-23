@@ -13,6 +13,12 @@ knitr::opts_chunk$set(echo = TRUE)
 df <- read.csv('insurance_cost.csv', stringsAsFactors = T)
 ```
 
+```{r}
+devtools::install_github("ropensci/plotly")
+library(plotly)
+```
+
+
 ```{r message=FALSE, warning=FALSE}
 
 library(dplyr)
@@ -21,7 +27,7 @@ library(tidyr)
 library(ggplot2)
 library(ggpubr)
 library(skimr)
-install.packages (c('dplyr', 'magrittr', 'tidyr', 'ggplot2', 'ggpubr', "skimr") ,repos = "http://cran.us.r-project.org")
+install.packages (c('dplyr', 'magrittr', 'tidyr', 'ggplot2', 'ggpubr', "skimr", "plotly") ,repos = "http://cran.us.r-project.org")
 ```
 
 
@@ -110,7 +116,7 @@ scatter <- df %>%
 ggplot(aes(x=charges))+
   geom_density (fill ="blue", alpha = 0.3) +
   xlab("Charges (US Doll)") + 
-  ylab("log (Density)") +
+  ylab("Density") +
   theme_minimal()+
   theme(plot.title = element_text(hjust = 0.3))+
   geom_vline(xintercept = charges_mean, size = 1, color = "red", linetype = "dashed") +
@@ -229,7 +235,7 @@ df %>%
   theme(plot.title = element_text(size = 14, hjust = 0.5),
         axis.text.x = element_text(size = 14)) +
   facet_grid(. ~ smoker) +
-  stat_smooth(method='lm', size=0.5, color = 'black', alpha = 0.2, se=TRUE)
+  stat_smooth(method='lm', size=0.5, alpha = 0.2, se=TRUE)
 
 ```
 # 10. Сделайте график из заданий 7-9, но вместо переменной age используйте переменную bmi.
@@ -246,7 +252,7 @@ df %>%
   theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
         axis.text.x = element_text(size = 14)) +
   facet_grid(. ~ smoker) +
-  stat_smooth(method='lm', size=0.5, color = 'black', alpha = 0.3, se=TRUE)
+  stat_smooth(method='lm', size=0.5, alpha = 0.3, se=TRUE)
 ```
 # 11. Отличаются ли затраты на лечение мужчин-курильщиков в зависимости от региона?
 
