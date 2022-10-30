@@ -1,8 +1,3 @@
-Homework_ggpot
-================
-Olga Ilina
-2022-10-16
-
 # 1. Загрузим данные
 
 ``` r
@@ -16,7 +11,7 @@ devtools::install_github("ropensci/plotly")
     ## Downloading GitHub repo ropensci/plotly@HEAD
 
     ## 
-    ##      checking for file ‘/private/var/folders/md/d3tjc99n06z74xxpmw6c9_y40000gn/T/Rtmpi0ILwp/remotes16f2b5a8cc579/plotly-plotly.R-c95a20f/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/md/d3tjc99n06z74xxpmw6c9_y40000gn/T/Rtmpi0ILwp/remotes16f2b5a8cc579/plotly-plotly.R-c95a20f/DESCRIPTION’
+    ##      checking for file ‘/private/var/folders/md/d3tjc99n06z74xxpmw6c9_y40000gn/T/RtmpfGCMLO/remotes16e5445f972a7/plotly-plotly.R-2db78b7/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/md/d3tjc99n06z74xxpmw6c9_y40000gn/T/RtmpfGCMLO/remotes16e5445f972a7/plotly-plotly.R-2db78b7/DESCRIPTION’
     ##   ─  preparing ‘plotly’:
     ##      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
     ##   ─  checking for LF line-endings in source and make files and shell scripts
@@ -58,7 +53,7 @@ install.packages (c('dplyr', 'magrittr', 'tidyr', 'ggplot2', 'ggpubr', "skimr", 
 
     ## 
     ## The downloaded binary packages are in
-    ##  /var/folders/md/d3tjc99n06z74xxpmw6c9_y40000gn/T//Rtmpi0ILwp/downloaded_packages
+    ##  /var/folders/md/d3tjc99n06z74xxpmw6c9_y40000gn/T//RtmpfGCMLO/downloaded_packages
 
 ``` r
 library(skimr)
@@ -82,7 +77,7 @@ Data summary
 **Variable type: factor**
 
 | skim_variable | n_missing | complete_rate | ordered | n_unique | top_counts                             |
-|:--------------|----------:|--------------:|:--------|---------:|:---------------------------------------|
+|:----------|-------:|----------:|:------|-------:|:---------------------------|
 | sex           |         0 |             1 | FALSE   |        2 | mal: 676, fem: 662                     |
 | smoker        |         0 |             1 | FALSE   |        2 | no: 1064, yes: 274                     |
 | region        |         0 |             1 | FALSE   |        4 | sou: 364, nor: 325, sou: 325, nor: 324 |
@@ -90,13 +85,13 @@ Data summary
 **Variable type: numeric**
 
 | skim_variable | n_missing | complete_rate |     mean |       sd |      p0 |     p25 |     p50 |      p75 |     p100 | hist  |
-|:--------------|----------:|--------------:|---------:|---------:|--------:|--------:|--------:|---------:|---------:|:------|
+|:---------|------:|---------:|------:|------:|-----:|-----:|-----:|------:|------:|:----|
 | age           |         0 |             1 |    39.21 |    14.05 |   18.00 |   27.00 |   39.00 |    51.00 |    64.00 | ▇▅▅▆▆ |
 | bmi           |         0 |             1 |    30.66 |     6.10 |   15.96 |   26.30 |   30.40 |    34.69 |    53.13 | ▂▇▇▂▁ |
 | children      |         0 |             1 |     1.09 |     1.21 |    0.00 |    0.00 |    1.00 |     2.00 |     5.00 | ▇▂▂▁▁ |
 | charges       |         0 |             1 | 13270.42 | 12110.01 | 1121.87 | 4740.29 | 9382.03 | 16639.91 | 63770.43 | ▇▂▁▁▁ |
 
-# 2. Выведем гистограммы всех нумерических переменных - df$age, df$bmi, df\$charges:
+# 2. Выведем гистограммы всех нумерических переменных - df*a**g**e*, *d**f*bmi, df$charges:
 
 ``` r
 ggplot(data = df, 
@@ -104,7 +99,7 @@ ggplot(data = df,
   geom_histogram(binwidth = 1, color = 'black' , fill = 'red', alpha = 0.5)
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 ``` r
 ggplot(data = df, 
@@ -112,7 +107,7 @@ ggplot(data = df,
   geom_histogram(binwidth = 1,  color = 'black' , fill = '#66CC99', alpha = 0.5)
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-5-2.png)
 
 ``` r
 ggplot(data = df, 
@@ -122,11 +117,11 @@ ggplot(data = df,
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-5-3.png)<!-- --> \#
-3. Нарисуйте график плотности по колонке charges. Отметьте вертикальные
-линии средней и медианы на графике. Раскрасьте текст и линии средней и
-медианы разными цветами. Добавьте текстовые пояснения значения средней и
-медианы. Подберите тему для графика. Назовите оси.
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-5-3.png)
+\# 3. Нарисуйте график плотности по колонке charges. Отметьте
+вертикальные линии средней и медианы на графике. Раскрасьте текст и
+линии средней и медианы разными цветами. Добавьте текстовые пояснения
+значения средней и медианы. Подберите тему для графика. Назовите оси.
 
 ``` r
 # Построим график плотности
@@ -136,7 +131,7 @@ df %>%
   geom_density (fill ="blue", alpha = 0.7) 
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ``` r
 # Найдём среднее
@@ -166,7 +161,7 @@ df %>%
            label=paste0("Median=", charges_median), color = "black") 
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-6-2.png)
 
 # 4. Сделайте три box_plot по отношению переменных charges и (1) sex (2) smoker (3) region. Подберите тему для графика. Назовите оси.
 
@@ -177,7 +172,7 @@ ggplot(data = df,
   theme_linedraw()
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ``` r
 ggplot(data = df, 
@@ -186,7 +181,7 @@ ggplot(data = df,
   theme_linedraw()
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-7-2.png)
 
 ``` r
 ggplot(data = df, 
@@ -195,7 +190,7 @@ ggplot(data = df,
   theme_linedraw()
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-7-3.png)<!-- -->
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-7-3.png)
 
 # 5. Объедините графики из заданий 3 и 4 в один так, чтобы сверху шёл один график из задания 3, а под ним 3 графика из задания 4. Сделайте общее название для графика.
 
@@ -248,7 +243,7 @@ bar<- ggarrange(bar1, bar2, bar3,
 bar
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ``` r
 combine_plot <- ggarrange(scatter, bar,
@@ -261,8 +256,8 @@ annotate_figure(combine_plot, top = text_grob("Charges distribution",
                color = "black", face = "bold", size = 14))
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-8-2.png)<!-- --> \#
-6. Сделайте фасет графика из задания 3 по колонке region.
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-8-2.png)
+\# 6. Сделайте фасет графика из задания 3 по колонке region.
 
 ``` r
 STATS <- df %>% 
@@ -283,10 +278,10 @@ df %>%
   theme_minimal()
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-9-1.png)<!-- --> \#
-7. Постройте scatter plot отношения переменных age и charges. Добавьте
-названия осей, название графика и тему. Сделайте так, чтобы числа по оси
-Х отображались 14 шрифтом.
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-9-1.png)
+\# 7. Постройте scatter plot отношения переменных age и charges.
+Добавьте названия осей, название графика и тему. Сделайте так, чтобы
+числа по оси Х отображались 14 шрифтом.
 
 ``` r
 df %>%
@@ -301,8 +296,8 @@ df %>%
   font("ylab", size = 14)
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-10-1.png)<!-- --> \#
-8. Проведите линию тренда для предыдущего графика.
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-10-1.png)
+\# 8. Проведите линию тренда для предыдущего графика.
 
 ``` r
 df %>%
@@ -324,8 +319,8 @@ df %>%
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-11-1.png)<!-- --> \#
-9. Сделайте разбивку предыдущего графика по колонке smokers (у вас
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-11-1.png)
+\# 9. Сделайте разбивку предыдущего графика по колонке smokers (у вас
 должно получится две линии тренда для курящих и нет)
 
 ``` r
@@ -346,9 +341,9 @@ df %>%
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-12-1.png)<!-- --> \#
-10. Сделайте график из заданий 7-9, но вместо переменной age используйте
-переменную bmi.
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-12-1.png)
+\# 10. Сделайте график из заданий 7-9, но вместо переменной age
+используйте переменную bmi.
 
 ``` r
 df %>% 
@@ -368,9 +363,9 @@ df %>%
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-13-1.png)<!-- --> \#
-11. Отличаются ли затраты на лечение мужчин-курильщиков в зависимости от
-региона?
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-13-1.png)
+\# 11. Отличаются ли затраты на лечение мужчин-курильщиков в зависимости
+от региона?
 
 ``` r
 # Создаём сабсет из мужчин-курильщиков и для оценки распределения данных построим графики box plot для отображения медианы, квартилей. размаха и выбросов
@@ -391,7 +386,7 @@ bar<- df %>%
 bar
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-14-1.png)
 
 # 12. Представить зависимость количества детей от статуса курения у женщин
 
@@ -416,7 +411,7 @@ df %>%
 
     ## Warning: Ignoring unknown parameters: binwidth
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-15-1.png)
 
 # 13. Как представлена зависимость BMI и charges и распределение BMI и charges в зависимости от region у людей старше 35 лет?
 
@@ -466,15 +461,16 @@ combine_plot <- ggarrange(bar1, NA, scatter, bar2,
 combine_plot
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-16-1.png)
 
 ``` r
 annotate_figure(combine_plot, top = text_grob("Correlation of charges and BMI and their distribution based on the region", 
                color = "black", face = "bold.italic", size = 14))
 ```
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-16-2.png)<!-- --> \#
-14. (это задание засчитывается за два) Приблизительно повторите график:
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-16-2.png)
+\# 14. (это задание засчитывается за два) Приблизительно повторите
+график:
 
 ``` r
 df <- df %>% 
@@ -540,4 +536,4 @@ stat_smooth(method="lm", size=1, fill = 'grey', alpha = 0.6, alpha = 0.5)+
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](Homework_ggplot2_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](Homework_ggplot2_files/figure-markdown_github/unnamed-chunk-17-1.png)
