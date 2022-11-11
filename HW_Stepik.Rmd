@@ -1,0 +1,289 @@
+---
+title: "HW_Stepik"
+author: "Olga"
+date: "2022-11-04"
+output: 
+  word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+library(dplyr)
+library(magrittr)
+library(tidyr)
+library(ggpubr)
+library(skimr)
+library(tibble)
+library (psych)
+library (tidyselect)
+library(tidyverse)
+library(flextable)
+library(gtsummary)
+library (officer)
+```
+
+
+```{r}
+stepik<- read.table(file = 'data_excel.tsv', sep = '\t', header = TRUE, dec = ".") 
+
+```
+
+```{r}
+# Поменяем знак разделителя 
+stepik <- stepik %>%
+  mutate(across(-(1:5), ~ gsub(',', '.', .x)))
+                      
+```
+
+
+```{r}
+# Переведем переменные charaсter (Группа, Пол, Группа.крови) в factor
+stepik <- stepik %>%
+  mutate(across(c(1, 3, 5), as.factor))
+```
+
+
+```{r}
+#Заменим пропущенные значения в "Группа.крови" на "Нет данных"
+stepik <- stepik %>%
+  mutate (`Группа.крови` = `Группа.крови` %>%
+            as.character() %>%
+            replace_na("Нет данных") %>%
+            as.factor()
+          )
+```
+
+```{r}
+# Заменим отрицательные значения на NA
+
+stepik <- stepik %>% 
+mutate(`Базофилы_E1`= ifelse(`Базофилы_E1` < 0, NA, `Базофилы_E1` )) %>% 
+mutate(`Эозинофилы_E1`= ifelse(`Эозинофилы_E1` < 0, NA, `Эозинофилы_E1` )) %>%
+mutate(`Гемоглобин_E1`= ifelse(`Гемоглобин_E1` < 0, NA, `Гемоглобин_E1` )) %>%
+mutate(`Эритроциты_E1`= ifelse(`Эритроциты_E1` < 0, NA, `Эритроциты_E1` )) %>%
+mutate(`Базофилы_E2`= ifelse(`Базофилы_E2` < 0, NA, `Базофилы_E2` )) %>%
+mutate(`Эозинофилы_E2`= ifelse(`Эозинофилы_E2` < 0, NA, `Эозинофилы_E2` )) %>%
+mutate(`Гемоглобин_E2`= ifelse(`Гемоглобин_E2` < 0, NA, `Гемоглобин_E2` )) %>%
+mutate(`Эритроциты_E2`= ifelse(`Эритроциты_E2` < 0, NA, `Эритроциты_E2` ))
+
+
+```
+
+```{r}
+# Переведем переменные charaсter в numeric
+stepik <- stepik %>%
+  mutate(across(where(is.character), as.numeric))
+
+```
+
+```{r}
+#Переименуем переменную "Группа.крови"
+names(stepik)[names(df) == 'Группа.крови'] <- 'Группа крови'
+```
+
+
+
+```{r}
+# Добавим переменную Визит
+stepik1 <- stepik %>% pivot_longer(-(1:5), names_to = c("Параметр", "Визит"), names_sep = "_", values_to = "Показатель") %>%
+   mutate(`Визит` = case_when(`Визит` == "E1" ~ "Визит 1",
+                             `Визит` == "E2" ~ "Визит 2")) %>%
+  pivot_wider(names_from = `Параметр`, values_from = `Показатель`)
+
+stepik1 <- stepik1 %>%
+  mutate(across(where(is.character), as.factor))
+
+
+```
+
+
+
+```{r}
+# Сводная таблица для описательной статистики по количественным переменным
+stepik %>% 
+  select(where(is.numeric)) %>%
+  describe (., na.rm = TRUE, skew = TRUE, ranges = TRUE)
+```
+```{r}
+stepik1 %>%
+  select (`Группа`, where (is.numeric)) %>%
+  group_by(`Группа`) %>%
+  summarise (across(where(is.numeric), function (x) mean (x, na.rm = TRUE)))
+```
+
+```{r}
+stepik1 %>%
+  select (`Визит`, where (is.numeric)) %>%
+  group_by(`Визит`) %>%
+  summarise (across(where(is.numeric), function (x) mean (x, na.rm = TRUE)))
+```
+
+
+
+
+```{r}
+stepik %>%
+  select (`Группа`, contains("_E1")) %>%
+  group_by(`Группа`) %>%
+  summarise (across(where(is.numeric), function (x) mean (x, na.rm = TRUE)))
+```
+
+
+
+```{r}
+stepik %>%
+  select (`Группа`, contains("_E2")) %>%
+  group_by(`Группа`) %>%
+  summarise (across(where(is.numeric), function (x) mean (x, na.rm = TRUE)))
+```
+
+
+```{r}
+stepik %>%
+  group_by('Группа') %>%
+  select(where(is.numeric)) %>%
+  describe (., na.rm = TRUE, skew = TRUE, ranges = TRUE)
+```
+
+
+
+```{r}
+# Общая характеристика группы пациентов с использованием tbl_summary {gtsummary}
+tbl_summary(stepik1)
+```
+
+
+```{r}
+# Сравнение данных по визитам tbl_summary {gtsummary}
+tbl_summary(stepik1, by = "Группа") %>%
+  add_p() %>%
+  add_significance_stars()
+
+```
+
+```{r}
+# Сравнение показателей крови по визитам tbl_summary {gtsummary}
+
+stepik1 %>% 
+  select (`Визит`, `Базофилы`, `Эозинофилы`, `Гемоглобин`, `Эритроциты`)%>%
+  tbl_summary(., by = "Визит") %>%
+  add_p() %>%
+  add_significance_stars()
+
+```
+
+
+
+```{r}
+# Характеристика показателей крови по визитам и группам tbl_strata {gtsummary}
+
+
+tbl_strat1 <-
+  stepik1 %>%
+  select(c(`Визит`,`Группа`,`Базофилы`, `Эозинофилы`,`Гемоглобин`, `Эритроциты`)) %>%
+  tbl_strata(
+    strata = `Визит`,
+    .tbl_fun =
+      ~ .x %>%
+        tbl_summary(by = `Группа`, missing = "no") %>%
+        add_n() %>%
+        add_p() %>%
+        add_significance_stars(),
+    .header = "**{strata}**, N = {n}"
+  )
+
+
+tbl_strat1
+
+
+tbl_strat2 <-
+  stepik1 %>%
+  tbl_strata(
+    strata = `Группа`,
+    .tbl_fun =
+      ~ .x %>%
+        tbl_summary(by = `Визит`, missing = "no") %>%
+        add_n() %>%
+        add_p() %>%
+        add_significance_stars(),
+    .header = "**{strata}**, N = {n}"
+  )
+
+tbl_strat2
+
+
+
+
+```
+
+\newpage
+
+```{r}
+set_flextable_defaults(table.layout = "autofit")
+
+tf <- tempfile(fileext = ".docx")
+```
+
+
+
+```{r}
+# Желаемая статистика
+
+statistics <- list (
+  
+  `_Количество субъектов` = ~length(.x) %>% as.character(),
+  `_Количество (есть данные)`  = ~sum(!is.na(.x)) %>% as.character(),
+  `_Нет данных` = ~sum(is.na(.x)) %>% as.character(),
+  `_Ср. знач.` = ~ifelse(sum(!is.na(.x)) == 0, "Н/П*", mean(.x, na.rm = TRUE) %>% round(2) %>% as.character ()),
+  `_Станд. отклонение` = ~ifelse(sum(!is.na(.x)) < 3, "Н/П*", sd(.x, na.rm = TRUE) %>% round (2) %>% as.character ()),
+  `_95% ДИ для среднего` = ~sd(.x, na.rm = TRUE) %>% round (2) %>% as.character(),
+  `_мин. - макс.` = ~ifelse(sum(!is.na(.x)) == 0, "Н/П*", paste0(min(.x, na.rm = TRUE) %>% round (2), " - ", max(.x, na.rm = TRUE) %>% round(2))),
+  `_Медиана` = ~ifelse(sum(!is.na(.x)) == 0, "Н/П*", median(.x, na.rm = TRUE) %>% round(2) %>% as.character()),
+  `_Q1 - Q3` = ~ifelse(sum(!is.na(.x)) == 0, "Н/П*", paste0(quantile(.x, 0.25, na.rm = TRUE) %>% round (2), "-", quantile(.x, 0.75, na.rm = TRUE) %>% round (2)))
+)
+
+
+# Статистика по группам 1 и 2
+
+table1 <- stepik1 %>% 
+  group_by(`Группа`) %>% 
+  dplyr:: summarise(across(where(is.numeric), statistics)) %>% 
+  pivot_longer(!'Группа') %>% 
+  separate(name, into = c("Переменная", "Статистика"), sep = "__") %>% 
+  dplyr::rename(`Значение` = `value`) %>% 
+  flextable() %>% 
+  theme_box() %>% 
+  merge_v(c("Группа", "Переменная")) %>%
+  add_header_lines(x = ., "Описательная статистика по группам") %>%
+  set_table_properties(width = 1, layout = "autofit") %>% 
+  print(preview = "docx")
+
+```
+
+
+\newpage
+
+```{r}
+# Сравнение номинативных и численных переменных по группам 1 и 2
+p_value_sign <- function(x) {
+  x < 0.05
+}
+
+table2 <- stepik1 %>%
+  tbl_summary(by = "Группа") %>% 
+  bold_labels() %>%
+  add_p() %>%
+  add_significance_stars()  %>%
+  as_flex_table() %>%
+  color(i = ~p_value_sign(p.value), j = "p.value", color = "red") %>%
+  add_header_lines(x = ., "Сравнение номинативных и численных переменных по группам") %>%
+  set_table_properties(width = 1, layout = "autofit") %>% 
+  theme_booktabs() %>%
+  print(preview = "docx")
+
+```
+
+
