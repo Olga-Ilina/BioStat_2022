@@ -1,0 +1,95 @@
+---
+title: "HW_ANOVA"
+author: "Olga"
+date: "2022-11-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE}
+library(dplyr)
+library(ggplot2)
+library(multcomp)
+```
+
+
+
+```{r}
+soccer_general <- read.csv("soccer.csv", sep=";")[, 2:6] %>% 
+    mutate(Position = as.factor(Position), 
+    Nationality = as.factor(Nationality), 
+    Age = as.numeric(Age), 
+    Height = as.numeric(Height)
+) %>% 
+filter(Nationality %in% c("Spanish", "Italian", "German", "English", "Argentinian")) 
+
+set.seed(1) 
+
+soccer_wrk <- soccer_general[sample(1:nrow(soccer_general), 150), ] %>% 
+    mutate(Nationality = factor(Nationality))
+```
+
+
+1. Используйте дисперсионный анализ для того, чтобы выяснить наличие связи между ростом футболиста и его позицией на поле. Интерпретируйте полученный результат теста.
+
+```{r}
+# Классический
+aov(Height ~ Position, data = soccer_wrk) %>% summary
+```
+
+```{r}
+# с поправкой Уэлша
+oneway.test(Height ~ Position, data = soccer_wrk)
+```
+
+Т.к. в обоих случаях p-value << 0.01, то мы отвергаем нулевую гипотезу об отсутствии связи между ростом спортсмена и его позицией при уровне значимости a = 0.05. 
+
+2. Используйте процедуру Хоторна-Бретца-Вестфалла для того, чтобы описать взаимосвязь между ростом футболиста и его положением на поле (p-values + доверительные интервалы). Опишите и интерпретируйте полученные результаты.
+```{r}
+lm(Height ~ Position, data = soccer_wrk) %>%  
+  glht(linfct = mcp(Position = "Tukey")) %>% 
+  summary()
+
+
+confint <- lm(Height ~ Position, data = soccer_wrk) %>%  glht(linfct = mcp(Position = "Tukey")) %>% confint()
+```
+
+При проведении post hoc анализа методом Хоторна-Брэтца-Вестфалла выявлены статистически значимые различия между следующими группами футболистов: Goalkeeper - Defender (p = 0.0036), Midfielder - Defender (p = 0.0029), Goalkeeper - Forvard (p < 0.001), Midfielder - Goalkeeper (p < 0.001).
+
+```{r}
+par(mar = c(5, 10, 4, 2)+0.1)
+confint %>% plot(xlab = "Height difference (cm)")
+```
+
+
+3. Сравните результаты с результатами, которые вы получили в предыдущем домашнем задании.
+
+При проведении дисперсионного анализа выявлены статистические значимые различия между группами футболистов в выборке, что указывает на существование хотя бы одной  пары групп, в которой средние значения роста статистически значимо различаются. Post hoc анализ методом Хоторна-Бретца-Вестфалла подтвердил статистически значимые различия между группами. 
+
+4. Используйте дисперсионный анализ и постхок процедуру ХБФ для того, чтобы выяснить и описать наличие связи между ростом футболиста и страной, за которую он играет. Опишите и интерпретируйте полученные результаты.
+
+```{r}
+# Дисперсионный анализ
+aov(Height ~ Nationality, data = soccer_wrk) %>% summary
+
+
+oneway.test(Height ~ Nationality, data = soccer_wrk)
+```
+
+```{r}
+# HBW
+lm(Height ~ Nationality, data = soccer_wrk) %>%  
+  glht(linfct = mcp(Nationality = "Tukey")) %>% 
+  summary()
+
+
+lm(Height ~ Nationality, data = soccer_wrk) %>%  
+  glht(linfct = mcp(Nationality = "Tukey")) %>% 
+  confint()
+```
+```
+При проведении дисперсионного анализа и post hoc анализа не выявлены статистически значимые различия по росту между группами футболистов в зависимости от страны
+
