@@ -1,0 +1,156 @@
+---
+title: "ImmuneSpace Study SDY984"
+subtitle: "Study SDY984 of Varizella Zoster Vaccines"
+author: "Olga Ilina"
+date: "2022-11-28"
+output: 
+  html_document:
+    keep_md: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(labelled)
+library(gtsummary)
+library(dendextend)
+library(pheatmap)
+library(tableone)
+library(sqldf)
+library (magrittr)
+```
+
+```{r}
+all_noNorm_withResponse_eset <- readRDS("all_noNorm_withResponse_eset.rds")
+```
+
+
+```{r}
+# Датасет с исходными характеристиками по исследованию SDY984
+df_pheno <- all_noNorm_withResponse_eset@phenoData@data %>%
+  filter(study_accession == "SDY984")
+```
+
+
+```{r}
+skimr :: skim(df_pheno)
+```
+
+
+```{r}
+# Исходные характеристики пациентов
+df_baseline <- df_pheno %>%
+  filter(study_time_collected == 0)
+
+str(df_baseline)
+```
+
+
+
+```{r}
+# Convert to factor variables
+
+df_baseline <- df_baseline %>%
+  mutate_at(vars(`gender`, `race`, `ethnicity`, `vaccine`, `vaccine_type`, `arm_accession`, `cohort`), ~ factor(.)) 
+
+
+df_baseline$MFC_p30 <- factor(df_baseline$MFC_p30, labels = c("Low responder", "Moderate responder", "High responder"))
+
+df_baseline$arm_accession <- factor(df_baseline$arm_accession, labels = c("3536", "3537"))
+```
+
+```{r}
+# Merge race into one column
+
+df_baseline$Type <- names(df_baseline[23:26])[max.col(df_baseline[23:26])]
+
+```
+
+```{r}
+# Rename variables
+df_baseline <- df_baseline %>%
+  rename (`Arm` = `arm_accession`, `Age` = `age_imputed`, `Gender` = `gender`, `Race` = `race`, `Ethnicity` = `ethnicity`, `Baseline Immune Response Value MFC` = `ImmResp_baseline_value_MFC`, `Postvaccinal Immune Response Value MFC` = `ImmResp_postVax_value_MFC`, `Maximum Fold Change (MFC)` = `MFC`, `MFC p30` = `MFC_p30`)
+```
+
+
+```{r}
+# Subsetting data
+
+df1 <- sqldf("select Arm, Age, Gender, Race, Ethnicity, `Maximum Fold Change (MFC)`, `Baseline Immune Response Value MFC`, `Postvaccinal Immune Response Value MFC`, `MFC p30` from df_baseline")
+
+str(df1)
+```
+
+
+```{r}
+# Сравнение
+fs.vars <- c("Age", "Gender", "Race", "Ethnicity", "Type", "Maximum Fold Change (MFC)", "Baseline Immune Response Value MFC", "Postvaccinal Immune Response Value MFC")
+
+fs.trt <- c("Arm")
+
+att1 <- CreateTableOne(data = df_baseline, 
+                       vars = fs.vars, 
+                       strata = fs.trt)
+print(att1)
+```
+
+```{r}
+
+# Table 1
+df1 %>%
+  tbl_summary %>%
+  add_n() %>%
+  modify_header(label ~ "**Variable**") %>%
+  modify_footnote(
+    all_stat_cols() ~ "Median (IQR) or Frequency (%)"
+  ) %>%
+  modify_caption("**Table 1. Patient Characteristics**") %>%
+  bold_labels()
+```
+
+
+
+```{r}
+df1 %>%
+  tbl_summary(by = Arm) %>%
+  add_p(pvalue_fun = ~style_pvalue(.x, digits = 2)) %>%
+  add_overall() %>%
+  add_n() %>%
+  modify_header(label ~ "**Variable**") %>%
+  modify_spanning_header(c("stat_1", "stat_2") ~ "**Arm**") %>%
+  modify_footnote(
+    all_stat_cols() ~ "Median (IQR) or Frequency (%)"
+  ) %>%
+  modify_caption("**Table 2. Patient Characteristics According to Treatment Arm**") %>%
+  bold_labels()
+```
+
+
+```{r}
+df1 %>%
+  tbl_summary(by = `MFC p30`) %>%
+  add_p(pvalue_fun = ~style_pvalue(.x, digits = 2)) %>%
+  add_overall() %>%
+  add_n() %>%
+  modify_header(label ~ "**Variable**") %>%
+  modify_spanning_header(c("stat_1", "stat_2", "stat_3") ~ "**Responce**") %>%
+  modify_footnote(
+    all_stat_cols() ~ "Median (IQR) or Frequency (%)"
+  ) %>%
+  modify_caption("**Table 3. Patient Characteristics According to the Vaccination Responce**") %>%
+  bold_labels()
+```
+
+
+
+Данные по экспрессии генов
+
+```{r}
+#Gene expression data
+assay <- all_noNorm_withResponse_eset@assayData$exprs
+```
+
+
